@@ -1,4 +1,4 @@
-package roles.json;
+package com.healthdom.rules.test;
 
 import java.io.BufferedReader;
 import java.io.IOException;

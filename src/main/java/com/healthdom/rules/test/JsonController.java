@@ -1,8 +1,9 @@
-package roles.json;
+package com.healthdom.rules.test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JsonController {
@@ -52,7 +53,7 @@ public class JsonController {
 
 	}
 
-	public static String buildJson() {
+	public static String buildJson() throws JSONException {
 		JsonComponent json = new JsonComponent(getTimestamp(), getPaymentPlanVariant(), getattributeId(),
 				getattributeValue());
 

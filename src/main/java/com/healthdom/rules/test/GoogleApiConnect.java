@@ -54,6 +54,6 @@ public class GoogleApiConnect {
 		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 	}
 
-	v
+	
 
 }
