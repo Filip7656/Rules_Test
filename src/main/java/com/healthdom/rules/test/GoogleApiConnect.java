@@ -18,7 +18,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.SheetsScopes;
 
-public class GoogleConnect2 {
+public class GoogleApiConnect {
 	private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static final String TOKENS_DIRECTORY_PATH = "Creds/creds.json";
@@ -39,7 +39,7 @@ public class GoogleConnect2 {
 	 */
 	public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
 		// Load client secrets.
-		InputStream in = GoogleConnect2.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+		InputStream in = GoogleApiConnect.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
 		if (in == null) {
 			throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
 		}
@@ -54,9 +54,6 @@ public class GoogleConnect2 {
 		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 	}
 
-	/**
-	 * Prints the names and majors of students in a sample spreadsheet:
-	 * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-	 */
+	v
 
 }

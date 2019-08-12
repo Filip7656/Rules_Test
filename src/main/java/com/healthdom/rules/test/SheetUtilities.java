@@ -24,7 +24,7 @@ public class SheetUtilities {
         final String spreadsheetId = "1HXcELfXPL8O-Yo-IzfR68FfHL3-PUOZiiOyG5BpzBgk";
         final String range = "TESTS!A:E";
        
-        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, GoogleConnect2.getCredentials(HTTP_TRANSPORT))
+        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, GoogleApiConnect.getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
         
