@@ -1,73 +1,74 @@
 package com.healthdom.rules.test;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+
 public class JsonController {
-	private static int getTimestamp() {
-		return 32123;
-
+	private static String getTimestamp() throws IOException, GeneralSecurityException {
+		return (String) SheetUtilities.getColumn(3, SheetUtilities.openSheet()).get(4);
 	}
 
-	private static String getPaymentPlanVariant() {
-		return "aaa";
-
+	private static String getPaymentPlanVariant() throws IOException, GeneralSecurityException {
+		return (String) SheetUtilities.getColumn(3, SheetUtilities.openSheet()).get(5);
 	}
 
-	private static List<String> getattributeId() {
-		List<String> attributeId = new ArrayList<String>();
-		attributeId.add("one");
-		attributeId.add("two");
-		attributeId.add("three");
-		attributeId.add("onfe");
-		attributeId.add("tgwo");
-		attributeId.add("tbhree");
-		attributeId.add("odne");
-		attributeId.add("tvwo");
-		attributeId.add("thtree");
-		attributeId.add("odne");
-		attributeId.add("twox");
-		attributeId.add("thzree");
+	private static List<Object> getattributeId() throws IOException, GeneralSecurityException {
+		List<Object> attributeId = SheetUtilities.getColumn(0, SheetUtilities.openSheet()).subList(7,
+				SheetUtilities.getColumn(0, SheetUtilities.openSheet()).size());
 		return attributeId;
 
 	}
 
-	private static List<String> getattributeValue() {
-		List<String> attributeValue = new ArrayList<String>();
-		attributeValue.add("1");
-		attributeValue.add("1.1");
-		attributeValue.add("aa1");
-		attributeValue.add("1s");
-		attributeValue.add("1d.1");
-		attributeValue.add("aea1");
-		attributeValue.add("31");
-		attributeValue.add("13.1");
-		attributeValue.add("a3a1");
-		attributeValue.add("13");
-		attributeValue.add("13.1");
-		attributeValue.add("a3a1");
+	private static List<Object> getattributeValue() throws IOException, GeneralSecurityException {
+		List<Object> attributeValue = SheetUtilities.getColumn(3, SheetUtilities.openSheet()).subList(7,
+				SheetUtilities.getColumn(3, SheetUtilities.openSheet()).size());
 		return attributeValue;
 
 	}
 
-	public static String buildJson() throws JSONException {
+	public static String buildJson() throws JSONException, IOException, GeneralSecurityException {
 		JsonComponent json = new JsonComponent(getTimestamp(), getPaymentPlanVariant(), getattributeId(),
 				getattributeValue());
 
-		JSONObject object = new JSONObject();
-
+		Map<Object, Object> attributesObject = new HashMap<>();
+		Map<Object, Object> medicalTestsObject = new HashMap<>();
+		Map<Object, Object> medicalTestsDueInObject = new HashMap<>();
 		for (int i = 0; i < json.getListSize(); i++) {
-			object.put(json.getAttributeId(i), json.getAttributeValue(i));
+			String data = (String) json.getAttributeId(i);
+			if (data.isEmpty()) {
+				continue;
+			}
+			String delims = "[.]";
+			String[] tokens = data.split(delims);
+			if (tokens[0].equals("attributes")) {
+				attributesObject.put((String) tokens[1], json.getAttributeValue(i));
+			} else if (tokens[0].equals("medicalTests")) {
+				medicalTestsObject.put((String) tokens[1], json.getAttributeValue(i));
+			} else if (tokens[0].equals("medicalTestsDueIn")) {
+				medicalTestsDueInObject.put((String) tokens[1], json.getAttributeValue(i));
+			}
 		}
 
-		String jsonString = new JSONObject().put("timestamp", json.getTimestamp())
-				.put("paymentPlanVariant", json.getPaymentPlanVariant()).put("attributes", object).toString();
+		HashMap<String, Object> jsonObject = new HashMap<String, Object>();
+		jsonObject.put("timestamp", json.getTimestamp());
+		jsonObject.put("paymentPlanVariant", json.getPaymentPlanVariant());
+		jsonObject.put("attributes", attributesObject);
+		jsonObject.put("medicalTests", medicalTestsObject);
+		jsonObject.put("medicalTestsDueIn", medicalTestsDueInObject);
+		Gson gson = new Gson();
+		String j = gson.toJson(jsonObject);
+		System.out.println(j);
+		return j;
 
-		System.out.println(jsonString);
-		return jsonString;
 	}
 
 }
