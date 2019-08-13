@@ -5,6 +5,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,22 +39,22 @@ public class JsonController {
 		JsonComponent json = new JsonComponent(getTimestamp(), getPaymentPlanVariant(), getattributeId(),
 				getattributeValue());
 
-		HashMap<Object, Object> attributesObject = new HashMap<Object, Object>();
-		HashMap<Object, Object> medicalTestsObject = new HashMap<Object, Object>();
-		HashMap<Object, Object> medicalTestsDueInObject = new HashMap<Object, Object>();
-
+		Map<Object, Object> attributesObject = new HashMap<>();
+		Map<Object, Object> medicalTestsObject = new HashMap<>();
+		Map<Object, Object> medicalTestsDueInObject = new HashMap<>();
 		for (int i = 0; i < json.getListSize(); i++) {
 			String data = (String) json.getAttributeId(i);
-			if (data != "") {
-				String delims = "[.]";
-				String[] tokens = data.split(delims);
-				if (tokens[0] == "attributes") {
-					attributesObject.put((String) tokens[1], json.getAttributeValue(i));
-				} else if (tokens[0] == "medicalTests") {
-					medicalTestsObject.put((String) tokens[1], json.getAttributeValue(i));
-				} else if (tokens[0] == "medicalTestsDueIn") {
-					medicalTestsDueInObject.put((String) tokens[1], json.getAttributeValue(i));
-				}
+			if (data.isEmpty()) {
+				continue;
+			}
+			String delims = "[.]";
+			String[] tokens = data.split(delims);
+			if (tokens[0].equals("attributes")) {
+				attributesObject.put((String) tokens[1], json.getAttributeValue(i));
+			} else if (tokens[0].equals("medicalTests")) {
+				medicalTestsObject.put((String) tokens[1], json.getAttributeValue(i));
+			} else if (tokens[0].equals("medicalTestsDueIn")) {
+				medicalTestsDueInObject.put((String) tokens[1], json.getAttributeValue(i));
 			}
 		}
 

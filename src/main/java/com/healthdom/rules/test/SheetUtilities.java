@@ -20,6 +20,7 @@ public class SheetUtilities {
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	final static String spreadsheetId = "1HXcELfXPL8O-Yo-IzfR68FfHL3-PUOZiiOyG5BpzBgk";
 	final static String range = "TESTS!C:H";
+
 	public static List<List<Object>> openSheet() throws IOException, GeneralSecurityException {
 		// Build a new authorized API client service.
 		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -42,6 +43,7 @@ public class SheetUtilities {
 	public static List<Object> getColumn(int columnNumber, List<List<Object>> columns) {
 		List<Object> choosenColumn = columns.get(columnNumber);
 		return choosenColumn;
+
 	}
 
 	public static Map<Object, Object> mapAttributes(List<Object> attributesColumn, List<Object> valuesColumn) {
