@@ -1,9 +1,21 @@
-package roles.json;
+package com.healthdom.rules.test;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.Authenticator;
+import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
+import java.net.URL;
+import java.security.GeneralSecurityException;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -12,43 +24,33 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ApiService {
-	public static void POSTRequest() throws IOException {
-		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-		Response result = new Response();
-
-		try {
-			HttpPost request = new HttpPost("http://debug-service.test.healthdom.com/test/recommendations");
-			StringEntity params = new StringEntity(JsonController.buildJson().toString());
-			request.addHeader("content-type", "application/json");
-			request.setEntity(params);
-			httpClient.execute(request);
-		} catch (Exception ex) {
-			result.setLogError(ex.toString());
-		} finally {
-			httpClient.close();
-		}
+	public static void POST() throws JSONException, IOException, GeneralSecurityException
+	{
+		 String query_url = "https://debug-service.test.healthdom.com/test/recommendations?access_token=99a5df95-d7fb-4d0b-9d25-20d97ebcb3b6";
+         String json = JsonController.buildJson();
+         try {
+         URL url = new URL(query_url);
+         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+         conn.setDoOutput(true);
+         conn.setDoInput(true);
+         conn.setRequestMethod("POST");
+         OutputStream os = conn.getOutputStream();
+         os.write(json.getBytes("UTF-8"));
+         os.close(); 
+         // read the response
+         InputStream in = new BufferedInputStream(conn.getInputStream());
+         String result = IOUtils.toString(in, "UTF-8");
+         System.out.println(result);
+         in.close();
+         conn.disconnect();
+         } catch (Exception e) {
+ 			System.out.println(e);
+ 		}
 	}
 
-	public static void GETRequest() throws IOException {
-
-		HttpClient client = new DefaultHttpClient();
-		HttpGet request = new HttpGet("http://debug-service.test.healthdom.com/test/recommendations");
-
-		HttpResponse response = client.execute(request);
-
-		System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
-
-		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-		StringBuffer result = new StringBuffer();
-		String line = "";
-		while ((line = rd.readLine()) != null) {
-			result.append(line);
-		}
-
-		System.out.println(result.toString());
-
-	}
 }

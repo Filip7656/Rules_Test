@@ -27,7 +27,7 @@ public class GoogleApiConnect {
 	 * Global instance of the scopes required by this quickstart. If modifying these
 	 * scopes, delete your previously saved tokens/ folder.
 	 */
-	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
+	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	private static final String CREDENTIALS_FILE_PATH = "credLoc.json";
 
 	/**
@@ -53,7 +53,5 @@ public class GoogleApiConnect {
 		LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
 		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 	}
-
-	v
 
 }
