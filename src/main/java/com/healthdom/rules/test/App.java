@@ -13,8 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class App {
 
 	public static void main(String[] args) throws IOException, GeneralSecurityException, ParseException {
-	List<List<Object>> allData =	SheetUtilities.openSheet();
-	ArrayList<Object> calculatedColumn = new ArrayList<Object>();	
+	List<List<Object>> allData =SheetUtilities.openSheet();
+	List<Object> calculatedColumn = allData.get(3);	
 	SheetUtilities.saveSheet(RulesTranslator.convertForApi(allData, calculatedColumn), 3,allData);
 
 	}
