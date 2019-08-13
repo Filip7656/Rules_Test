@@ -34,11 +34,7 @@ public class JsonController {
 
 	}
 
-<<<<<<< HEAD
 	public static String buildJson() throws JSONException, IOException, GeneralSecurityException {
-=======
-	public static String buildJson() throws JSONException {
->>>>>>> master
 		JsonComponent json = new JsonComponent(getTimestamp(), getPaymentPlanVariant(), getattributeId(),
 				getattributeValue());
 

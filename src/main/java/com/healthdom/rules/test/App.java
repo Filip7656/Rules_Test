@@ -12,16 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class App {
 
-<<<<<<< HEAD
-	 public static void main(String[] args) throws Exception {
-		 ApiService.POST();
-	 }
-=======
-	public static void main(String[] args) throws IOException, GeneralSecurityException, ParseException {
-	List<List<Object>> allData =SheetUtilities.openSheet();
-	List<Object> calculatedColumn = allData.get(3);	
-	SheetUtilities.saveSheet(RulesTranslator.convertForApi(allData, calculatedColumn), 3,allData);
-
+	public static void main(String[] args) throws Exception {
+		ApiService.POST();
 	}
->>>>>>> master
 }
