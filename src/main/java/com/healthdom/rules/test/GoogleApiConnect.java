@@ -19,24 +19,11 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.SheetsScopes;
 
 public class GoogleApiConnect {
-	private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static final String TOKENS_DIRECTORY_PATH = "Creds/creds.json";
-
-	/**
-	 * Global instance of the scopes required by this quickstart. If modifying these
-	 * scopes, delete your previously saved tokens/ folder.
-	 */
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	private static final String CREDENTIALS_FILE_PATH = "credLoc.json";
 
-	/**
-	 * Creates an authorized Credential object.
-	 * 
-	 * @param HTTP_TRANSPORT The network HTTP Transport.
-	 * @return An authorized Credential object.
-	 * @throws IOException If the credentials.json file cannot be found.
-	 */
 	public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
 		// Load client secrets.
 		InputStream in = GoogleApiConnect.class.getResourceAsStream(CREDENTIALS_FILE_PATH);

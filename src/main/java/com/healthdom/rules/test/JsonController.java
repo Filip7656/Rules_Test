@@ -2,14 +2,11 @@ package com.healthdom.rules.test;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.google.gson.Gson;
 
 public class JsonController {

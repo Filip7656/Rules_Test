@@ -1,34 +1,26 @@
 package com.healthdom.rules.test;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class SheetObject {
 
-	private List<String> attributeNames;
-	private List<String> dataType;
 	private List<Object> inputData;
+	private List<Object> rulesResult;
+	private List<Object> comparisionResult;
+	private List<Object> responseFromApi;
+	private List<Object> expectedResult;
 
-	public SheetObject(List<String> attributeNames, List<String> dataType, List<Object> inputData) {
+	public SheetObject(List<Object> inputData, List<Object> rulesResult, List<Object> comparisionResult,
+			List<Object> responseFromApi, List<Object> expectedResult) {
 		super();
-		this.attributeNames = attributeNames;
-		this.dataType = dataType;
 		this.inputData = inputData;
-	}
-
-	public List<String> getAttributeNames() {
-		return attributeNames;
-	}
-
-	public void setAttributeNames(List<String> attributeNames) {
-		this.attributeNames = attributeNames;
-	}
-
-	public List<String> getDataType() {
-		return dataType;
-	}
-
-	public void setDataType(List<String> dataType) {
-		this.dataType = dataType;
+		this.rulesResult = rulesResult;
+		this.comparisionResult = comparisionResult;
+		this.responseFromApi = responseFromApi;
+		this.expectedResult = expectedResult;
 	}
 
 	public List<Object> getInputData() {
@@ -38,5 +30,38 @@ public class SheetObject {
 	public void setInputData(List<Object> inputData) {
 		this.inputData = inputData;
 	}
+
+	public List<Object> getRulesResult() {
+		return rulesResult;
+	}
+
+	public void setRulesResult(List<Object> rulesResult) {
+		this.rulesResult = rulesResult;
+	}
+
+	public List<Object> getComparisionResult() {
+		return comparisionResult;
+	}
+
+	public void setComparisionResult(List<Object> comparisionResult) {
+		this.comparisionResult = comparisionResult;
+	}
+
+	public List<Object> getResponseFromApi() {
+		return responseFromApi;
+	}
+
+	public void setResponseFromApi(List<Object> responseFromApi) {
+		this.responseFromApi = responseFromApi;
+	}
+
+	public List<Object> getExpectedResult() {
+		return expectedResult;
+	}
+
+	public void setExpectedResult(List<Object> expectedResult) {
+		this.expectedResult = expectedResult;
+	}
+
 
 }
