@@ -2,11 +2,15 @@ package com.healthdom.rules.test;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.api.client.http.json.JsonHttpContent;
 import com.google.gson.Gson;
 
 public class JsonController {
@@ -27,7 +31,7 @@ public class JsonController {
 
 	private static List<Object> getattributeValue() throws IOException, GeneralSecurityException {
 		List<Object> attributeValue = SheetUtilities.getColumn(3, SheetUtilities.openSheet()).subList(7,
-				SheetUtilities.getColumn(3, SheetUtilities.openSheet()).size());
+				SheetUtilities.getColumn(0, SheetUtilities.openSheet()).size());
 		return attributeValue;
 
 	}
@@ -52,6 +56,7 @@ public class JsonController {
 				medicalTestsObject.put((String) tokens[1], json.getAttributeValue(i));
 			} else if (tokens[0].equals("medicalTestsDueIn")) {
 				medicalTestsDueInObject.put((String) tokens[1], json.getAttributeValue(i));
+
 			}
 		}
 
@@ -68,4 +73,20 @@ public class JsonController {
 
 	}
 
+	public static Map<String, Integer> mapJson() throws IOException, GeneralSecurityException {
+		Map<String, Integer> jsonMap = new HashMap<>();
+		JsonComponent json = new JsonComponent(getTimestamp(), getPaymentPlanVariant(), getattributeId(),
+				getattributeValue());
+		for (int i = 0; i < json.getListSize(); i++) {
+			String data = (String) json.getAttributeId(i);
+			if (data.isEmpty()) {
+				continue;
+			}
+			String delims = "[.]";
+			String[] tokens = data.split(delims);
+			jsonMap.put(tokens[1], json.getAttributeIds().indexOf(data) + 6);
+		}
+		System.out.println(jsonMap.values());
+		return jsonMap;
+	}
 }

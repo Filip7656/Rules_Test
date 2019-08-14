@@ -38,6 +38,10 @@ public class JsonComponent {
 		return attributeId.get(s);
 	}
 
+	public List<Object> getAttributeIds() {
+		return attributeId;
+	}
+
 	public void setAttributeId(List<Object> attributeId) {
 		this.attributeId = attributeId;
 	}
