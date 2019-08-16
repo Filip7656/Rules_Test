@@ -1,31 +1,20 @@
 package com.healthdom.rules.test;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.Authenticator;
 import java.net.HttpURLConnection;
-import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.security.GeneralSecurityException;
-
-import javax.net.ssl.HttpsURLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONException;
-import org.json.JSONObject;
+
 import com.healthdom.commons.helper.JsonHelper;
 import com.healthdom.commons.model.user.User;
 
@@ -56,4 +45,19 @@ public class ApiService {
 		return result;
 	}
 
+	public static List<Object> createAttributesListToSave()
+			throws JSONException, IOException, GeneralSecurityException {
+		Map<String, Integer> sheetAttributesIndex = JsonController.mapJson();
+		User user = JsonHelper.deserialize(POST(), User.class);
+		Map<String, String> jsonAttributes = user.getAttributes();
+		TreeMap<Integer, String> attributesToSave = new TreeMap<>();
+
+		for (String key : jsonAttributes.keySet()) {
+			attributesToSave.put(sheetAttributesIndex.get(key), jsonAttributes.get(key));
+		}
+		List<Object> list = new ArrayList(attributesToSave.values());
+		System.out.println(list);
+		return list;
+
+	}
 }
