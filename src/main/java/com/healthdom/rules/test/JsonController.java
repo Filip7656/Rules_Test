@@ -84,9 +84,9 @@ public class JsonController {
 			}
 			String delims = "[.]";
 			String[] tokens = data.split(delims);
-			jsonMap.put(tokens[1], json.getAttributeIds().indexOf(data) + 6);
+			jsonMap.put(tokens[1], json.getAttributeIds().indexOf(data) + 8);
 		}
-		System.out.println(jsonMap.values());
+		System.out.println(jsonMap);
 		return jsonMap;
 	}
 }

@@ -6,7 +6,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -150,12 +152,31 @@ public class RulesTranslator {
 	}
 	public static void responseFromApi() throws JSONException, IOException, GeneralSecurityException
 	{
+		Map<String, Integer> sheetAttributes = JsonController.mapJson();
 		User user = JsonHelper.deserialize(ApiService.POST(), User.class);
-		JsonController.mapJson().containsKey(user.getAttributes().values());
+		Map<String,String> jsonAttributes = user.getAttributes();
+		Map<String,Integer> attributesToSave = new HashMap<>();
+		
+		for ( String key : jsonAttributes.keySet() ) {
+		    if(sheetAttributes.containsKey(key))
+		    {
+		    	attributesToSave.put(jsonAttributes.get(key), sheetAttributes.get(key));
+		    }
+		}
+		Object[] a = attributesToSave.entrySet().toArray();
+		Arrays.sort(a, new Comparator() {
+			public int compare(Object o1, Object o2) {
+				return ((Map.Entry<String, Integer>) o2).getValue()
+						.compareTo(((Map.Entry<String, Integer>) o1).getValue());
+			}
+		});
+		Map<Integer, String> test = new HashMap<>();
+		for (Object e : a) {
+			test.put(((Map.Entry<String, Integer>) e).getValue(), (((Map.Entry<String, Integer>) e).getKey()));
+		}
+		System.out.println(test);
 		
 		
-		System.out.println(user.getAttributes());
-		System.out.println(user.getAttributes().values());
 }
 }
 

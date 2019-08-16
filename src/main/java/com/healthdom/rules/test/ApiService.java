@@ -49,6 +49,7 @@ public class ApiService {
 			result = IOUtils.toString(in, "UTF-8");
 			in.close();
 			conn.disconnect();
+			System.out.println(result);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
