@@ -2,16 +2,22 @@ package com.healthdom.rules.test.components;
 
 import java.util.List;
 
-public class AttributesObject {
+public class AttributesModel implements AppModel {
 	private List<Object> attributes;
 	private List<Object> dataType;
 
-	public AttributesObject(List<Object> attributes, List<Object> dataType) {
+	// =================================================================
+	// constructors
+	// =================================================================
+	public AttributesModel(List<Object> attributes, List<Object> dataType) {
 		super();
 		this.attributes = attributes;
 		this.dataType = dataType;
 	}
 
+	// =================================================================
+	// getters, setters
+	// =================================================================
 	public List<Object> getAttributes() {
 		return attributes;
 	}

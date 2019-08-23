@@ -18,13 +18,13 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.SheetsScopes;
 
-public class GoogleApiConnect {
+class GoogleApiConnect {
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static final String TOKENS_DIRECTORY_PATH = "Creds/creds.json";
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	private static final String CREDENTIALS_FILE_PATH = "credLoc.json";
 
-	public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+	static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
 		// Load client secrets.
 		InputStream in = GoogleApiConnect.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
 		if (in == null) {

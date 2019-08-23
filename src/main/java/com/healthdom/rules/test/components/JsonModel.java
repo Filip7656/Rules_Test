@@ -2,13 +2,16 @@ package com.healthdom.rules.test.components;
 
 import java.util.List;
 
-public class JsonModel {
+public class JsonModel implements AppModel {
 
 	private String timestamp;
 	private String paymentPlanVariant;
 	private List<Object> attributeId;
 	private List<Object> attributeValue;
 
+	// =================================================================
+	// constructors
+	// =================================================================
 	public JsonModel(String timestamp, String paymentPlanVariant, List<Object> attributeId,
 			List<Object> attributeValue) {
 		super();
@@ -18,6 +21,9 @@ public class JsonModel {
 		this.attributeValue = attributeValue;
 	}
 
+	// =================================================================
+	// getters, setters
+	// =================================================================
 	public String getTimestamp() {
 		return timestamp;
 	}

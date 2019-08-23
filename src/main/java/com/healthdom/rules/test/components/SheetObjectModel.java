@@ -1,11 +1,8 @@
 package com.healthdom.rules.test.components;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
-public class SheetObject {
+public class SheetObjectModel implements AppModel {
 
 	private List<Object> inputData;
 	private List<Object> rulesResult;
@@ -13,7 +10,10 @@ public class SheetObject {
 	private List<Object> responseFromApi;
 	private List<Object> expectedResult;
 
-	public SheetObject(List<Object> inputData, List<Object> rulesResult, List<Object> comparisionResult,
+	// =================================================================
+	// constructors
+	// =================================================================
+	public SheetObjectModel(List<Object> inputData, List<Object> rulesResult, List<Object> comparisionResult,
 			List<Object> responseFromApi, List<Object> expectedResult) {
 		super();
 		this.inputData = inputData;
@@ -22,7 +22,9 @@ public class SheetObject {
 		this.responseFromApi = responseFromApi;
 		this.expectedResult = expectedResult;
 	}
-
+	// =================================================================
+	// getters, setters
+	// =================================================================
 	public List<Object> getInputData() {
 		return inputData;
 	}
@@ -62,6 +64,5 @@ public class SheetObject {
 	public void setExpectedResult(List<Object> expectedResult) {
 		this.expectedResult = expectedResult;
 	}
-
 
 }

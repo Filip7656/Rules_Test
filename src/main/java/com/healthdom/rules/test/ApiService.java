@@ -10,7 +10,6 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -19,57 +18,50 @@ import org.slf4j.LoggerFactory;
 
 import com.healthdom.commons.helper.JsonHelper;
 import com.healthdom.commons.model.user.User;
-import com.healthdom.rules.test.components.AttributesObject;
-import com.healthdom.rules.test.components.SheetObject;
+import com.healthdom.rules.test.components.AttributesModel;
+import com.healthdom.rules.test.components.SheetObjectModel;
 
-public class ApiService {
+class ApiService {
 	private static Logger LOG = LoggerFactory.getLogger(ApiService.class);
 
-	public static List<String> postApiCall(List<SheetObject> testObjects, AttributesObject attributes)
+	static List<SheetObjectModel> addResponseFromApitoTestObjects(List<SheetObjectModel> testObjects,
+			AttributesModel attributes) throws JSONException, IOException, GeneralSecurityException {
+		List<User> users = new ArrayList<User>();
+		List<String> apiResponse = postApiCall(testObjects, attributes);
+		List<Map<String, String>> jsonAttributes = new ArrayList<Map<String, String>>();
+		parseResponseToUser(users, apiResponse, jsonAttributes);
+		mergeResponseWithTestObjects(testObjects, jsonAttributes);
+		return testObjects;
+
+	}
+
+	private static void mergeResponseWithTestObjects(List<SheetObjectModel> testObjects,
+			List<Map<String, String>> jsonAttributes) {
+		for (int i = 0; i < jsonAttributes.size(); i++) {
+			List<Object> responseFromApiToSave = new ArrayList<Object>(jsonAttributes.get(i).values());
+			
+			testObjects.get(i).setResponseFromApi(responseFromApiToSave);
+			// make list match attributes names in worksheet
+			for (int y = 0; y < 6; y++) {
+				testObjects.get(i).getResponseFromApi().add(y, " ");
+			}
+		}
+	}
+
+	private static void parseResponseToUser(List<User> users, List<String> apiResponse,
+			List<Map<String, String>> jsonAttributes) {
+		for (int i = 0; i < apiResponse.size(); i++) {
+			users.add(JsonHelper.deserialize(apiResponse.get(i), User.class));
+			jsonAttributes.add(i, users.get(i).getAttributes());
+		}
+	}
+
+	private static List<String> postApiCall(List<SheetObjectModel> testObjects, AttributesModel attributes)
 			throws JSONException, IOException, GeneralSecurityException {
 		List<String> json = JsonController.buildJson(testObjects, attributes);
 		List<String> resultsFromApi = new ArrayList<String>();
 		requestResponseFromApi(json, resultsFromApi);
 		return resultsFromApi;
-	}
-
-	public static List<List<Object>> createAttributesListToSave(List<SheetObject> testObjects,
-			AttributesObject attributes) throws JSONException, IOException, GeneralSecurityException {
-
-		List<Map<String, Integer>> sheetAttributesIndex = JsonController.mapJson(testObjects, attributes);
-		List<User> users = new ArrayList<User>();
-		List<String> apiResponse = postApiCall(testObjects, attributes);
-		List<Map<String, String>> jsonAttributes = new ArrayList<Map<String, String>>();
-
-		for (int i = 0; i < apiResponse.size(); i++) {
-			users.add(JsonHelper.deserialize(apiResponse.get(i), User.class));
-			jsonAttributes.add(i, users.get(i).getAttributes());
-		}
-
-		List<TreeMap<Integer, String>> attributesToSave = new ArrayList<TreeMap<Integer, String>>();
-
-		for (int i = 0; i < jsonAttributes.size(); i++) {
-			for (String key : jsonAttributes.get(i).keySet()) {
-				attributesToSave.get(i).put(sheetAttributesIndex.get(i).get(key), jsonAttributes.get(i).get(key));
-			}
-		}
-
-	//	List<Object> list = new ArrayList<Object>(attributesToSave.values());
-		List<List<Object>> listOfResponses = new ArrayList<List<Object>>();
-
-		for (int i = 0; i < attributesToSave.size(); i++) {
-			listOfResponses.add((List)attributesToSave.get(i).values());
-			
-			for (int y = 0; y < 8; y++) {
-				listOfResponses.get(i).add(y, " ");
-			}
-			
-		}
-
-	
-		LOG.info(listOfResponses.toString());
-		return listOfResponses;
-
 	}
 
 	private static void requestResponseFromApi(List<String> json, List<String> resultsFromApi) {
@@ -82,11 +74,10 @@ public class ApiService {
 				apiConnection.setDoInput(true);
 				apiConnection.setRequestMethod("POST");
 				OutputStream os = apiConnection.getOutputStream();
-				os.write(json.get(i).getBytes("UTF-8"));
+				os.write(json.get(i).getBytes(Consts.CHAR_CODING_TYPE));
 				os.close();
-				// read the response
 				InputStream in = new BufferedInputStream(apiConnection.getInputStream());
-				resultsFromApi.add(IOUtils.toString(in, "UTF-8"));
+				resultsFromApi.add(IOUtils.toString(in, Consts.CHAR_CODING_TYPE));
 				in.close();
 				apiConnection.disconnect();
 				LOG.info(resultsFromApi.get(i));

@@ -6,12 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.healthdom.rules.test.components.AttributesObject;
-import com.healthdom.rules.test.components.SheetObject;
+import com.healthdom.rules.test.components.AttributesModel;
+import com.healthdom.rules.test.components.SheetObjectModel;
 
-public class RulesTranslator {
+class RulesTranslator {
 
-	public static List<SheetObject> convertForApi(List<SheetObject> testObjects, AttributesObject attributes)
+	static List<SheetObjectModel> calculateValuesForApi(List<SheetObjectModel> testObjects, AttributesModel attributes)
 			throws ParseException {
 
 		numberApi(testObjects, attributes);
@@ -23,7 +23,7 @@ public class RulesTranslator {
 		return testObjects;
 	}
 
-	private static List<SheetObject> numberApi(List<SheetObject> testObjects, AttributesObject attributes) {
+	private static List<SheetObjectModel> numberApi(List<SheetObjectModel> testObjects, AttributesModel attributes) {
 		for (int i = 0; i < testObjects.size(); i++) {
 			for (int y = 0; y < attributes.getDataType().size(); y++) {
 				if (attributes.getDataType().get(y).equals("number"))
@@ -33,7 +33,7 @@ public class RulesTranslator {
 		return testObjects;
 	}
 
-	private static List<SheetObject> genderApi(List<SheetObject> testObjects, AttributesObject attributes) {
+	private static List<SheetObjectModel> genderApi(List<SheetObjectModel> testObjects, AttributesModel attributes) {
 		for (int i = 0; i < testObjects.size(); i++) {
 			for (int y = 0; y < attributes.getDataType().size(); y++) {
 				if (attributes.getDataType().get(y).equals("gender"))
@@ -47,7 +47,7 @@ public class RulesTranslator {
 		return testObjects;
 	}
 
-	private static List<SheetObject> timestampApi(List<SheetObject> testObjects, AttributesObject attributes)
+	private static List<SheetObjectModel> timestampApi(List<SheetObjectModel> testObjects, AttributesModel attributes)
 			throws ParseException {
 
 		for (int i = 0; i < testObjects.size(); i++) {
@@ -64,7 +64,7 @@ public class RulesTranslator {
 		return testObjects;
 	}
 
-	private static List<SheetObject> booleanApi(List<SheetObject> testObjects, AttributesObject attributes) {
+	private static List<SheetObjectModel> booleanApi(List<SheetObjectModel> testObjects, AttributesModel attributes) {
 		for (int i = 0; i < testObjects.size(); i++) {
 			for (int y = 0; y < attributes.getDataType().size(); y++) {
 				if (attributes.getDataType().get(y).equals("boolean")) {
@@ -79,7 +79,7 @@ public class RulesTranslator {
 		return testObjects;
 	}
 
-	private static List<SheetObject> ethnicityApi(List<SheetObject> testObjects, AttributesObject attributes) {
+	private static List<SheetObjectModel> ethnicityApi(List<SheetObjectModel> testObjects, AttributesModel attributes) {
 
 		for (int i = 0; i < testObjects.size(); i++) {
 			for (int y = 0; y < attributes.getDataType().size(); y++) {
@@ -107,7 +107,7 @@ public class RulesTranslator {
 		return testObjects;
 	}
 
-	private static List<SheetObject> yesNoNaApi(List<SheetObject> testObjects, AttributesObject attributes) {
+	private static List<SheetObjectModel> yesNoNaApi(List<SheetObjectModel> testObjects, AttributesModel attributes) {
 
 		for (int i = 0; i < testObjects.size(); i++) {
 			for (int y = 0; y < attributes.getDataType().size(); y++) {
@@ -121,18 +121,6 @@ public class RulesTranslator {
 					}
 				}
 			}
-		}
-		return testObjects;
-	}
-
-	public static List<SheetObject> includeResponseFromApi(List<SheetObject> testObjects,
-			List<List<Object>> dataFromApi) {
-		if (testObjects.size() == dataFromApi.size()) {
-			for (int i = 0; i < testObjects.size(); i++) {
-				testObjects.get(i).setResponseFromApi(dataFromApi.get(i));
-			}
-		} else {
-			System.out.println("Arrays NOT THE SAME SIZE");
 		}
 		return testObjects;
 	}
