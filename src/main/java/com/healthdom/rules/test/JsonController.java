@@ -8,38 +8,47 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.google.api.client.http.json.JsonHttpContent;
 import com.google.gson.Gson;
+import com.healthdom.rules.test.components.AttributesObject;
+import com.healthdom.rules.test.components.JsonModel;
+import com.healthdom.rules.test.components.SheetObject;
+import com.sun.tools.sjavac.Log;
 
 public class JsonController {
-	private static String getTimestamp() throws IOException, GeneralSecurityException {
-		return (String) SheetUtilities.getColumn(3, SheetUtilities.openSheet()).get(4);
+	private static Logger LOG = LoggerFactory.getLogger(JsonController.class);
+
+	public static List<String> buildJson(List<SheetObject> testObjects, AttributesObject attributes)
+			throws JSONException, IOException, GeneralSecurityException {
+		List<String> responseFromApi = new ArrayList<String>();
+		for (SheetObject sheetObject : testObjects) {
+			JsonModel json = buildJsonModel(attributes, sheetObject);
+			String j = jsonObjectHandler(json);
+			responseFromApi.add(j);
+		}
+		return responseFromApi;
 	}
 
-	private static String getPaymentPlanVariant() throws IOException, GeneralSecurityException {
-		return (String) SheetUtilities.getColumn(3, SheetUtilities.openSheet()).get(5);
+	private static JsonModel buildJsonModel(AttributesObject attributes, SheetObject sheetObject) {
+		JsonModel json = new JsonModel(sheetObject.getRulesResult().get(Consts.USER_TIMESTAMP_ROW).toString(),
+				sheetObject.getRulesResult().get(Consts.USER_PAYMENTPLAN_ROW).toString(), attributes.getAttributes(),
+				sheetObject.getRulesResult());
+		return json;
 	}
 
-	private static List<Object> getattributeId() throws IOException, GeneralSecurityException {
-		List<Object> attributeId = SheetUtilities.getColumn(0, SheetUtilities.openSheet()).subList(7,
-				SheetUtilities.getColumn(0, SheetUtilities.openSheet()).size());
-		return attributeId;
-
+	public static List<Map<String, Integer>> mapJson(List<SheetObject> testObjects, AttributesObject attributes)
+			throws IOException, GeneralSecurityException {
+		List<Map<String, Integer>> jsonMap = new ArrayList<Map<String, Integer>>();
+		for (SheetObject sheetObject : testObjects) {
+			JsonModel json = buildJsonModel(attributes, sheetObject);
+			mapJsonHandler(jsonMap, json);
+		}
+		return jsonMap;
 	}
 
-	private static List<Object> getattributeValue() throws IOException, GeneralSecurityException {
-		List<Object> attributeValue = SheetUtilities.getColumn(3, SheetUtilities.openSheet()).subList(7,
-				SheetUtilities.getColumn(0, SheetUtilities.openSheet()).size());
-		return attributeValue;
-
-	}
-
-	public static String buildJson() throws JSONException, IOException, GeneralSecurityException {
-		JsonComponent json = new JsonComponent(getTimestamp(), getPaymentPlanVariant(), getattributeId(),
-				getattributeValue());
-
+	private static String jsonObjectHandler(JsonModel json) {
 		Map<Object, Object> attributesObject = new HashMap<>();
 		Map<Object, Object> medicalTestsObject = new HashMap<>();
 		Map<Object, Object> medicalTestsDueInObject = new HashMap<>();
@@ -70,23 +79,25 @@ public class JsonController {
 		String j = gson.toJson(jsonObject);
 		System.out.println(j);
 		return j;
-
 	}
 
-	public static Map<String, Integer> mapJson() throws IOException, GeneralSecurityException {
-		Map<String, Integer> jsonMap = new HashMap<>();
-		JsonComponent json = new JsonComponent(getTimestamp(), getPaymentPlanVariant(), getattributeId(),
-				getattributeValue());
-		for (int i = 0; i < json.getListSize(); i++) {
-			String data = (String) json.getAttributeId(i);
-			if (data.isEmpty()) {
-				continue;
+	private static 	List<Map<String, Integer>>  mapJsonHandler(List<Map<String, Integer>> jsonMap, JsonModel json) {
+		Map<String, Integer> temporaryHandler = new HashMap<String, Integer>();	
+		for (int y = 0; y < json.getListSize(); y++) {
+				String data = (String) json.getAttributeId(y);
+				if (data.isEmpty()) {
+					continue;
+				}
+				String delims = "[.]";
+				String[] tokens = data.split(delims);
+				int key =json.getAttributeIds().indexOf(data) + 8;
+				temporaryHandler.put(tokens[0], key);
+				jsonMap.add(temporaryHandler);
+				LOG.info(temporaryHandler.toString());
+
 			}
-			String delims = "[.]";
-			String[] tokens = data.split(delims);
-			jsonMap.put(tokens[1], json.getAttributeIds().indexOf(data) + 8);
-		}
-		System.out.println(jsonMap);
+		
 		return jsonMap;
 	}
+
 }

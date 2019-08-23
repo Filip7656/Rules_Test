@@ -14,50 +14,85 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.healthdom.commons.helper.JsonHelper;
 import com.healthdom.commons.model.user.User;
+import com.healthdom.rules.test.components.AttributesObject;
+import com.healthdom.rules.test.components.SheetObject;
 
 public class ApiService {
-	public static String POST() throws JSONException, IOException, GeneralSecurityException {
-		String query_url = "https://debug-service.test.healthdom.com/test/recommendations?access_token=99a5df95-d7fb-4d0b-9d25-20d97ebcb3b6";
-		String json = JsonController.buildJson();
-		String result = "";
-		try {
-			URL url = new URL(query_url);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
-			conn.setRequestMethod("POST");
-			OutputStream os = conn.getOutputStream();
-			os.write(json.getBytes("UTF-8"));
-			os.close();
-			// read the response
-			InputStream in = new BufferedInputStream(conn.getInputStream());
-			result = IOUtils.toString(in, "UTF-8");
-			in.close();
-			conn.disconnect();
-			System.out.println(result);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return result;
+	private static Logger LOG = LoggerFactory.getLogger(ApiService.class);
+
+	public static List<String> postApiCall(List<SheetObject> testObjects, AttributesObject attributes)
+			throws JSONException, IOException, GeneralSecurityException {
+		List<String> json = JsonController.buildJson(testObjects, attributes);
+		List<String> resultsFromApi = new ArrayList<String>();
+		requestResponseFromApi(json, resultsFromApi);
+		return resultsFromApi;
 	}
 
-	public static List<Object> createAttributesListToSave()
-			throws JSONException, IOException, GeneralSecurityException {
-		Map<String, Integer> sheetAttributesIndex = JsonController.mapJson();
-		User user = JsonHelper.deserialize(POST(), User.class);
-		Map<String, String> jsonAttributes = user.getAttributes();
-		TreeMap<Integer, String> attributesToSave = new TreeMap<>();
+	public static List<List<Object>> createAttributesListToSave(List<SheetObject> testObjects,
+			AttributesObject attributes) throws JSONException, IOException, GeneralSecurityException {
 
-		for (String key : jsonAttributes.keySet()) {
-			attributesToSave.put(sheetAttributesIndex.get(key), jsonAttributes.get(key));
+		List<Map<String, Integer>> sheetAttributesIndex = JsonController.mapJson(testObjects, attributes);
+		List<User> users = new ArrayList<User>();
+		List<String> apiResponse = postApiCall(testObjects, attributes);
+		List<Map<String, String>> jsonAttributes = new ArrayList<Map<String, String>>();
+
+		for (int i = 0; i < apiResponse.size(); i++) {
+			users.add(JsonHelper.deserialize(apiResponse.get(i), User.class));
+			jsonAttributes.add(i, users.get(i).getAttributes());
 		}
-		List<Object> list = new ArrayList(attributesToSave.values());
-		System.out.println(list);
-		return list;
 
+		List<TreeMap<Integer, String>> attributesToSave = new ArrayList<TreeMap<Integer, String>>();
+
+		for (int i = 0; i < jsonAttributes.size(); i++) {
+			for (String key : jsonAttributes.get(i).keySet()) {
+				attributesToSave.get(i).put(sheetAttributesIndex.get(i).get(key), jsonAttributes.get(i).get(key));
+			}
+		}
+
+	//	List<Object> list = new ArrayList<Object>(attributesToSave.values());
+		List<List<Object>> listOfResponses = new ArrayList<List<Object>>();
+
+		for (int i = 0; i < attributesToSave.size(); i++) {
+			listOfResponses.add((List)attributesToSave.get(i).values());
+			
+			for (int y = 0; y < 8; y++) {
+				listOfResponses.get(i).add(y, " ");
+			}
+			
+		}
+
+	
+		LOG.info(listOfResponses.toString());
+		return listOfResponses;
+
+	}
+
+	private static void requestResponseFromApi(List<String> json, List<String> resultsFromApi) {
+		for (int i = 0; i < json.size(); i++) {
+			try {
+				URL healthdomApi = new URL(Consts.DEBUG_API_URL);
+				HttpURLConnection apiConnection = (HttpURLConnection) healthdomApi.openConnection();
+				apiConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+				apiConnection.setDoOutput(true);
+				apiConnection.setDoInput(true);
+				apiConnection.setRequestMethod("POST");
+				OutputStream os = apiConnection.getOutputStream();
+				os.write(json.get(i).getBytes("UTF-8"));
+				os.close();
+				// read the response
+				InputStream in = new BufferedInputStream(apiConnection.getInputStream());
+				resultsFromApi.add(IOUtils.toString(in, "UTF-8"));
+				in.close();
+				apiConnection.disconnect();
+				LOG.info(resultsFromApi.get(i));
+			} catch (Exception e) {
+				LOG.error(e.getMessage());
+			}
+		}
 	}
 }

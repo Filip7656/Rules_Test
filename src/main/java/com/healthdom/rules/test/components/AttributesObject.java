@@ -1,4 +1,4 @@
-package com.healthdom.rules.test;
+package com.healthdom.rules.test.components;
 
 import java.util.List;
 

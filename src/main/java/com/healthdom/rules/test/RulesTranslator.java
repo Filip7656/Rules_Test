@@ -6,6 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.healthdom.rules.test.components.AttributesObject;
+import com.healthdom.rules.test.components.SheetObject;
+
 public class RulesTranslator {
 
 	public static List<SheetObject> convertForApi(List<SheetObject> testObjects, AttributesObject attributes)

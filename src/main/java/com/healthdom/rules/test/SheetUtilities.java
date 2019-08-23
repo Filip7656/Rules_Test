@@ -14,14 +14,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.healthdom.rules.test.components.AttributesObject;
+import com.healthdom.rules.test.components.SheetObject;
 
-public class SheetUtilities {
+class SheetUtilities {
 	private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	final static String spreadsheetId = "1HXcELfXPL8O-Yo-IzfR68FfHL3-PUOZiiOyG5BpzBgk";
 	final static String range = "TESTS!C:EE";
 
-	public static List<List<Object>> openSheet() throws IOException, GeneralSecurityException {
+	static List<List<Object>> openSheet() throws IOException, GeneralSecurityException {
 		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
 		Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY,
@@ -38,12 +40,12 @@ public class SheetUtilities {
 		return values;
 	}
 
-	public static AttributesObject parseSheetToObjectAttributes(List<List<Object>> wholeSheet) {
+	static AttributesObject parseSheetToObjectAttributes(List<List<Object>> wholeSheet) {
 		AttributesObject atributes = new AttributesObject(wholeSheet.get(0), wholeSheet.get(1));
 		return atributes;
 	}
 
-	public static List<SheetObject> parseSheetToObject(List<List<Object>> wholeSheet) {
+	static List<SheetObject> parseSheetToObject(List<List<Object>> wholeSheet) {
 		List<SheetObject> data = new ArrayList<SheetObject>();
 
 		for (int i = 0; i < wholeSheet.size(); i++) {
@@ -56,7 +58,7 @@ public class SheetUtilities {
 		return data;
 	}
 
-	public static List<Object> getColumn(int columnNumber, List<List<Object>> columns) {
+	static List<Object> getColumn(int columnNumber, List<List<Object>> columns) {
 		List<Object> choosenColumn = columns.get(columnNumber);
 		return choosenColumn;
 
@@ -72,7 +74,7 @@ public class SheetUtilities {
 
 	}
 
-	public static void saveSheet(List<List<Object>> allData) throws GeneralSecurityException, IOException {
+	static void saveSheet(List<List<Object>> allData) throws GeneralSecurityException, IOException {
 		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
 		Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY,
@@ -85,7 +87,7 @@ public class SheetUtilities {
 
 	}
 
-	public static List<SheetObject> compareResults(List<SheetObject> testObjects) {
+	static List<SheetObject> compareResults(List<SheetObject> testObjects) {
 		for (int numerOfObject = 0; numerOfObject < testObjects.size(); numerOfObject++) {
 			for (int numerOfResult = 0; numerOfResult < testObjects.get(numerOfObject).getRulesResult()
 					.size(); numerOfResult++) {
@@ -109,9 +111,12 @@ public class SheetUtilities {
 	public static void saveObjectsToSheet(List<SheetObject> testObjects, List<List<Object>> wholeSheet)
 			throws IOException, GeneralSecurityException {
 		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+		int size = (testObjects.size()*6)-8;
+	
+		for (int i = 0; i < size; i+=6) {
+			int numberOfObject = i/6;
+			wholeSheet.set(i + 7, testObjects.get(numberOfObject).getResponseFromApi());
 
-		for (int i = -4; i < testObjects.size(); i++) {
-			wholeSheet.set(i + 6, (List<Object>) testObjects.get(i + 4));
 		}
 
 		Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY,
@@ -122,5 +127,9 @@ public class SheetUtilities {
 				.setValueInputOption("USER_ENTERED").execute();
 		System.out.printf("%d cells updated.", result.getUpdatedCells());
 	}
-
+	public static void addResponseFromApiToObject(List<Object> responseFromApi, List<SheetObject> testObjects) {
+		
+		
+		
+	}
 }

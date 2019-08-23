@@ -1,15 +1,15 @@
-package com.healthdom.rules.test;
+package com.healthdom.rules.test.components;
 
 import java.util.List;
 
-public class JsonComponent {
+public class JsonModel {
 
 	private String timestamp;
 	private String paymentPlanVariant;
 	private List<Object> attributeId;
 	private List<Object> attributeValue;
 
-	public JsonComponent(String timestamp, String paymentPlanVariant, List<Object> attributeId,
+	public JsonModel(String timestamp, String paymentPlanVariant, List<Object> attributeId,
 			List<Object> attributeValue) {
 		super();
 		this.timestamp = timestamp;
