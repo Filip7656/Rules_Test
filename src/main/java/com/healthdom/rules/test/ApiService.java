@@ -8,8 +8,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -26,19 +28,53 @@ class ApiService {
 
 	static List<SheetObjectModel> addResponseFromApitoTestObjects(List<SheetObjectModel> testObjects,
 			AttributesModel attributes) throws JSONException, IOException, GeneralSecurityException {
-		List<User> users = new ArrayList<User>();
+		List<User> users = new ArrayList<>();
 		List<String> apiResponse = postApiCall(testObjects, attributes);
-		List<Map<String, String>> jsonAttributes = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> jsonAttributes = new ArrayList<>();
 		parseResponseToUser(users, apiResponse, jsonAttributes);
-		mergeResponseWithTestObjects(testObjects, jsonAttributes);
+		mergeResponseWithTestObjects(attributes, testObjects, jsonAttributes);
 		return testObjects;
 
 	}
 
-	private static void mergeResponseWithTestObjects(List<SheetObjectModel> testObjects,
+	private static void mergeResponseWithTestObjects(AttributesModel attributes, List<SheetObjectModel> testObjects,
 			List<Map<String, String>> jsonAttributes) {
+		Map<Integer, String> finalMap = new HashMap<>();
+		TreeMap<Integer, String> attributesMap= new TreeMap<>();
+		for (int e = 0; e < attributes.getAttributes().size(); e++) {
+			attributesMap.put(e, attributes.getAttributes().get(e).toString());
+		}
+		List <Object> attributesCollumnNumber = new ArrayList<>(attributesMap.keySet());
+		List <Object> attributesNames = new ArrayList<>(attributesMap.values());
+		
+
+		
+		for (int w = 0; w < jsonAttributes.size(); w++) {
+				List <Object> listOfJsonKeys = new ArrayList<>(jsonAttributes.get(w).keySet());
+				List <Object> listOfJsonValues = new ArrayList<>(jsonAttributes.get(w).values());
+				
+				// tutaj dac fora dla attributeNames
+				// q
+				//   f
+				//		porownac
+				for (int f = 0; f < listOfJsonKeys.size(); f++) {
+					if(listOfJsonKeys.get(f).equals(attributesNames.get(arg0))){
+						
+					
+						
+					}else if(true) {
+						
+					}else if(true) {
+						
+					}
+				}
+		
+		
+		
+		
 		for (int i = 0; i < jsonAttributes.size(); i++) {
-			List<Object> responseFromApiToSave = new ArrayList<Object>(jsonAttributes.get(i).values());
+			List<Object> responseFromApiToSave = new ArrayList<>();
+		//	responseFromApiToSave.add(arg0, arg1);
 			
 			testObjects.get(i).setResponseFromApi(responseFromApiToSave);
 			// make list match attributes names in worksheet
@@ -47,7 +83,7 @@ class ApiService {
 			}
 		}
 	}
-
+	}
 	private static void parseResponseToUser(List<User> users, List<String> apiResponse,
 			List<Map<String, String>> jsonAttributes) {
 		for (int i = 0; i < apiResponse.size(); i++) {
